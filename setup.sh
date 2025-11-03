@@ -3,7 +3,9 @@
 cd $(dirname "$0")
 
 # Grant permissions
+sudo chmod -R o+rwx $(dirname "$0")
 chmod +x ./src/merge_slack_backup.sh
+sudo apt update && sudo apt install zip jq moreutils -y
 
 # Make python virtual environment and install required packages
 if [ ! -d "./env" ]; then
