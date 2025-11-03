@@ -80,7 +80,7 @@ def post_message(message, say):
     if "files" in message:
         message_text += "\n"
         for file in message["files"]:
-            message_text += f"<{file["permalink"]}|{file["name"]}>, "
+            message_text += f"<{file['permalink']}|{file['name']}>, "
         message_text = message_text[:-2]  # remove last ", "
 
     # get posted channel name
