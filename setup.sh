@@ -2,10 +2,8 @@
 
 cd $(dirname "$0")
 
-# Grant permissions
-sudo chmod -R o+rwx $(dirname "$0")
-chmod +x ./src/merge_slack_backup.sh
-sudo apt update && sudo apt install zip jq moreutils -y
+# Grant permissions to scripts
+chmod +x ./src/fix_database.sh
 
 # Make python virtual environment and install required packages
 if [ ! -d "./env" ]; then
@@ -23,12 +21,5 @@ rm slackdump_3.1.8_linux_amd64.deb
 # Setup slackdump with workspace info
 slackdump workspace import .env
 
-# Make directories
-WORK_DIR="./backup"/bin
-mkdir -p $WORK_DIR
-
-# Setup mmetl tool
-cd $WORK_DIR
-curl -LO https://github.com/mattermost/mmetl/releases/download/v0.1.1/linux_amd64.tar.gz
-tar -zxf linux_amd64.tar.gz
-rm linux_amd64.tar.gz
+# Make directory for backup files
+mkdir ./backup

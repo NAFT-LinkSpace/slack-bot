@@ -9,6 +9,8 @@ from functools import wraps
 from datetime import datetime, timedelta
 import subprocess
 
+from migrate_to_rocketchat import migrate
+
 POST_URL = 'https://slack.com/api/chat.postMessage'
 
 load_dotenv()
@@ -245,9 +247,8 @@ def run_backup():
             update_backup_log(month)
             counter += 1
 
-        # 3. run merge script
-        if counter > 0:
-            subprocess.run(['bash', MERGE_SCRIPT, zip_path], check=True)
+            # 3. migrate to Rocket.Chat
+            migrate(zip_path)
         return counter
     except subprocess.CalledProcessError as e:
         print(f"Error during backup process: {e}")
