@@ -16,20 +16,17 @@ if not ROCKETCHAT_URL or not ROCKETCHAT_USER or not ROCKETCHAT_TOKEN:
     print("Rocket.Chat configuration is incomplete. Skipping import.")
 
 SCRIPT_PATH = os.path.join(os.path.dirname(__file__), 'fix_database.sh')
-
-rocketchat_headers = {
+HEADERS = {
     'X-User-Id': ROCKETCHAT_USER,
     'X-Auth-Token': ROCKETCHAT_TOKEN,
 }
-success_response = {'success': True}
 
 def call_api(endpoint, method='GET', data=None):
     url = f'{ROCKETCHAT_URL}/api/v1/{endpoint}'
-    headers = rocketchat_headers
     if method == 'GET':
-        response = requests.get(url, headers=headers)
+        response = requests.get(url, headers=HEADERS)
     elif method == 'POST':
-        response = requests.post(url, headers=headers, json=data)
+        response = requests.post(url, headers=HEADERS, json=data)
     else:
         raise ValueError("Unsupported HTTP method")
     return response.json()
