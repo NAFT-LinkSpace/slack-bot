@@ -7,6 +7,8 @@ Slackワークスペース内の公開チャンネルの投稿を取得し，一
 ## 要件
 
 - Linux または macOS (WSLも可)
+- Windows の場合は [BusyBox](https://github.com/rmyorston/busybox-w32)
+  - `busybox64u.exe` をインストールし，環境変数 PATH に追加しておく．
 - Python 3.8 以上
 
 ## セットアップ手順
@@ -20,6 +22,7 @@ Slackワークスペース内の公開チャンネルの投稿を取得し，一
    ```
 1. スクリプトを実行し環境構築
     ```bash
+    # Windows の場合 `busybox64u sh` の実行後
     chmod +x setup.sh
     ./setup.sh
     ```
@@ -75,6 +78,7 @@ Slackワークスペース内の公開チャンネルの投稿を取得し，一
 ## 実行
 
 ```bash
+# Windows の場合 `busybox64u sh` の実行後
 chmod +x run.sh
 ./run.sh
 ```

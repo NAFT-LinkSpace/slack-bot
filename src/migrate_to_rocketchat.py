@@ -1,4 +1,5 @@
 import os
+import platform
 import base64
 from dotenv import load_dotenv
 from pprint import pprint
@@ -20,6 +21,7 @@ HEADERS = {
     'X-User-Id': ROCKETCHAT_USER,
     'X-Auth-Token': ROCKETCHAT_TOKEN,
 }
+IS_WINDOWS = platform.system() == 'Windows'
 
 def call_api(endpoint, method='GET', data=None):
     url = f'{ROCKETCHAT_URL}/api/v1/{endpoint}'
@@ -70,7 +72,10 @@ def migrate(zip_file_path):
                 return
 
             # Edit database
-            subprocess.run(['bash', SCRIPT_PATH], check=True)
+            if IS_WINDOWS:
+                subprocess.run(['busybox64u', 'bash', SCRIPT_PATH], check=True)
+            else:
+                subprocess.run(['bash', SCRIPT_PATH], check=True)
 
             print("Import completed successfully.")
     except Exception as e:

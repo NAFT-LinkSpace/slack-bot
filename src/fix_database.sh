@@ -1,4 +1,4 @@
-# !/bin/bash
+#!/bin/sh
 
 # This script is related to the following issue:
 # https://github.com/rocketchat/rocket.chat/issues/37058
