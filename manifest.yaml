@@ -1,0 +1,54 @@
+display_information:
+  name: every-ing
+  description: いろいろできるbot
+  background_color: "#00479e"
+  long_description: "下のコードで動いています．\r
+
+    <https://github.com/NAFT-LinkSpace/slack-bot>\r
+
+    \r
+
+    2025/11/03現在，以下の機能があります．\r
+
+    \r
+
+    - `#99_everything` のチャンネルにワークスペース内の投稿を転送？する機能\r
+
+    - ユーザーとチャンネルの情報が不足しているときに，自動でユーザーとチャンネルの情報を再読み込みする機能\r
+
+    - botへのメンションかつ `reload` のテキストが含まれる投稿があったときに，ユーザーとチャンネルの情報を再読み込みする機能\r
+
+    - botへのメンションかつ `backup` のテキストが含まれる投稿があったときに，2ヶ月前と1ヶ月前のパブリックチャンネルのバックアップを作成する機能\r
+
+    - Rocket.Chat のサーバーが起動しているときに，作成されたバックアップをRocket.Chat に読み込む機能\r
+
+    \r
+
+    部室の入って左奥のPCで動かしています．動いていなかったらPCを再起動してください．"
+features:
+  bot_user:
+    display_name: every-ing
+    always_online: false
+oauth_config:
+  scopes:
+    user:
+      - channels:history
+    bot:
+      - app_mentions:read
+      - channels:history
+      - channels:join
+      - channels:read
+      - chat:write
+      - chat:write.customize
+      - users:read
+settings:
+  event_subscriptions:
+    user_events:
+      - message.channels
+    bot_events:
+      - app_mention
+  interactivity:
+    is_enabled: true
+  org_deploy_enabled: false
+  socket_mode_enabled: true
+  token_rotation_enabled: false
