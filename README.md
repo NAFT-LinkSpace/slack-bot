@@ -20,10 +20,15 @@ Slackワークスペース内の公開チャンネルの投稿を取得し，一
    git clone https://github.com/NAFT-LinkSpace/slack-bot
    cd slack-bot
    ```
-1. スクリプトを実行し環境構築
+1. スクリプトに実行権限を付与する．
+   ```bash
+   # Windows の場合 `busybox64u sh` の実行後
+   chmod +x ./without_docker/*.sh
+   chmod +x ./run.sh
+   ```
+1. スクリプトを実行し環境構築(ボットの実行にDockerを使用する場合は不要)
     ```bash
     # Windows の場合 `busybox64u sh` の実行後
-    chmod +x ./without_docker/setup.sh
     ./without_docker/setup.sh
     ```
 
@@ -50,8 +55,11 @@ Slackワークスペース内の公開チャンネルの投稿を取得し，一
 
 ### (任意) Rocket.Chatの導入
 
-1. [Rocket.Chatの公式サイト](https://rocket.chat/install)を参考に，Rocket.Chatを導入する．
-   Step 1, Step 2, Step 3, Step 5のみでいい．
+1. Rocket.Chat を起動する
+    ```bash
+    # Windows の場合 `busybox64u sh` の実行後
+    ./run.sh rocketchat
+    ```
 1. http://localhost:3000 にアクセスし，アカウントとワークスペースを作成する．
 1. ユーザーのアイコンをクリックし，**Preferences > Personal Access Tokens** を選択する．
 1. 適当な名前をつけて **Add** を押し，トークンを発行し，**Token** と **Your user Id** を控えておく．
@@ -59,6 +67,8 @@ Slackワークスペース内の公開チャンネルの投稿を取得し，一
 なお，使いやすさのために以下の項目を設定しておくといい．
 1. 3点アイコン(Administration)をクリックし，**Workspace > Settings > Search > Default provider** から **Global search** をオンにする．
 1. **Workspace > Settings > Message > Always Search Using RegExp** をオンにする．
+1. **Workspace > Settings > File Upload > Storage Type** を `FileSystem` にする．
+1. 同じく **Workspace > Settings > File Upload** で，**File System > System Path** を `/app/uploads` にする．
 
 ### 環境変数の設定
 
@@ -69,16 +79,54 @@ Slackワークスペース内の公開チャンネルの投稿を取得し，一
    1.  `SLACK_TOKEN` にワークスペースから取得した **xoxc-** で始まるトークン
    1.  `SLACK_COOKIE` にワークスペースから取得した **xoxd-** で始まるトークン
    1.  `POST_CHANNEL_NAME` に投稿先のチャンネル名
-1. Rocket.Chat を使用しない場合は, `ROCKETCHAT_URL`, `ROCKETCHAT_USER_ID`, `ROCKETCHAT_TOKEN` の行を削除するかコメントアウトする．
+1. Rocket.Chat を使用しない場合は, `ROCKETCHAT_USER`, `ROCKETCHAT_TOKEN` の行を削除するかコメントアウトする．
 1. Rocket.Chat を使用する場合は, 以下のように設定する．
-   1. `ROCKETCHAT_URL` に Rocket.Chat の URL (localで動かす場合は変えなくていい)
-   1. `ROCKETCHAT_USER_ID` に **Your user Id**
+   1. `ROCKETCHAT_USER` に **Your user Id**
    1. `ROCKETCHAT_TOKEN` に **Token**
 
 ## 実行
 
+### Docker でボットを実行する場合
+
+自動で Rocket.Chat も起動する．
+
 ```bash
 # Windows の場合 `busybox64u sh` の実行後
-chmod +x ./without_docker/run.sh
+./run.sh
+```
+
+### Docker なしでボットを実行する場合
+
+この場合はRocket.Chatの使用のために，別途コマンドを打つ必要がある．
+
+```bash
+# Windows の場合 `busybox64u sh` の実行後
 ./without_docker/run.sh
 ```
+
+Rocket.Chatを使用する場合は，別のターミナルで以下のコマンドを実行する．
+
+```bash
+# Windows の場合 `busybox64u sh` の実行後
+./run.sh rocketchat
+```
+
+## Rocket.Chat でのバックアップの表示
+
+バックアップファイルは `./backup` ディレクトリに保存され確認が可能．サーバーの `/app/backup` ディレクトリと同期されている．
+
+ファイルのサイズが大きいと，pythonスクリプトでの自動インポートに失敗するので，以下の手順で手動でインポートが必要．
+
+1. Rocket.Chat を起動する．
+    ```bash
+    # Windows の場合 `busybox64u sh` の実行後
+    ./run.sh rocketchat
+    ```
+1. http://localhost:3000 にアクセスし，アカウントにログインする．
+1. 3点アイコン(Administration)をクリックし，**Workspace > Settings > Import** を選択する．
+1. **Import New File** をクリックする．
+1. 以下のように設定し，**Import** をクリックする．
+   - **Import Type**: `Slack`
+   - **File Type**: `Server File Path`
+   - **File Path**: `/app/backup/` + `./backup/`内の任意のバックアップファイルのパス
+1. **Start Import** をクリックする．

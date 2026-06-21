@@ -248,6 +248,8 @@ def run_backup():
             counter += 1
 
             # 3. migrate to Rocket.Chat
+            print(f"Backup completed.")
+            print(f"Server File Path: /app/backup/slackdump_{month_str}.zip")
             migrate(zip_path)
         return counter
     except subprocess.CalledProcessError as e:

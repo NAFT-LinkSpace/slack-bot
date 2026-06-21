@@ -1,0 +1,72 @@
+services:
+  slack-bot:
+    profiles:
+      - slack-bot
+    build:
+      context: .
+    volumes:
+      - ./.env:/app/.env:ro
+      - ./backup:/app/backup
+    restart: always
+
+  rocketchat:
+    profiles:
+      - rocketchat
+    image: registry.rocket.chat/rocketchat/rocket.chat:latest
+    restart: always
+    environment:
+      - PORT=3000
+      - ROOT_URL=http://localhost:3000
+      - MONGO_URL=mongodb://mongodb:27017/rocketchat?replicaSet=rs0
+      - MONGO_OPLOG_URL=mongodb://mongodb:27017/local?replicaSet=rs0
+      - DEPLOY_METHOD=docker
+      - DEPLOY_PLATFORM=compose
+    depends_on:
+      mongodb:
+        condition: service_healthy
+      mongodb-init:
+        condition: service_completed_successfully
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./backup:/app/backup:ro
+      - ./uploads:/app/uploads
+
+  # 公式のMongoDB 8.2イメージ
+  mongodb:
+    profiles:
+      - rocketchat
+    image: mongodb/mongodb-community-server:8.2-ubi8
+    restart: always
+    command: mongod --replSet rs0 --bind_ip_all
+    volumes:
+      - mongodb_data:/data/db:rw
+    healthcheck:
+      test: ["CMD", "mongosh", "--eval", "db.adminCommand('ping')"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 40s
+
+  # レプリカセットを初期化するための使い捨てコンテナ
+  mongodb-init:
+    profiles:
+      - rocketchat
+    image: mongodb/mongodb-community-server:8.2-ubi8
+    restart: "no"
+    depends_on:
+      mongodb:
+        condition: service_healthy
+    command: >
+      mongosh --host mongodb:27017 --eval '
+      try {
+        rs.status();
+      } catch (e) {
+        rs.initiate({
+          _id: "rs0",
+          members: [{ _id: 0, host: "mongodb:27017" }]
+        });
+      }'
+
+volumes:
+  mongodb_data:

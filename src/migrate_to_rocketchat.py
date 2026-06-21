@@ -7,24 +7,25 @@ import requests
 import subprocess
 
 load_dotenv()
-ROCKETCHAT_URL = os.environ['ROCKETCHAT_URL']
 ROCKETCHAT_USER = os.environ['ROCKETCHAT_USER']
 ROCKETCHAT_TOKEN = os.environ['ROCKETCHAT_TOKEN']
 
 DO_PROCESS = True
-if not ROCKETCHAT_URL or not ROCKETCHAT_USER or not ROCKETCHAT_TOKEN:
+if not ROCKETCHAT_USER or not ROCKETCHAT_TOKEN:
     DO_PROCESS = False
     print("Rocket.Chat configuration is incomplete. Skipping import.")
 
 SCRIPT_PATH = os.path.join(os.path.dirname(__file__), 'fix_database.sh')
-HEADERS = {
-    'X-User-Id': ROCKETCHAT_USER,
-    'X-Auth-Token': ROCKETCHAT_TOKEN,
-}
+HEADERS = {}
+if DO_PROCESS:
+    HEADERS = {
+        'X-User-Id': ROCKETCHAT_USER,
+        'X-Auth-Token': ROCKETCHAT_TOKEN,
+    }
 IS_WINDOWS = platform.system() == 'Windows'
 
 def call_api(endpoint, method='GET', data=None):
-    url = f'{ROCKETCHAT_URL}/api/v1/{endpoint}'
+    url = f'http://localhost:3000/api/v1/{endpoint}'
     if method == 'GET':
         response = requests.get(url, headers=HEADERS)
     elif method == 'POST':
@@ -71,12 +72,12 @@ def migrate(zip_file_path):
                 pprint(response.json())
                 return
 
-            # Edit database
-            if IS_WINDOWS:
-                subprocess.run(['busybox64u', 'bash', SCRIPT_PATH], check=True)
-            else:
-                subprocess.run(['bash', SCRIPT_PATH], check=True)
+            # Edit database (Rocket.Chat のバグ修正により以下は不要なはず)
+            # if IS_WINDOWS:
+            #     subprocess.run(['busybox64u', 'bash', SCRIPT_PATH], check=True)
+            # else:
+            #     subprocess.run(['bash', SCRIPT_PATH], check=True)
 
-            print("Import completed successfully.")
+            # print("Import completed successfully.")
     except Exception as e:
         print(f"An error occurred: {e}")
