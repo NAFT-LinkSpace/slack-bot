@@ -1,6 +1,7 @@
 #!/bin/sh
 
 cd $(dirname "$0")
+cd ../
 
 # Grant permissions to scripts
 chmod +x ./src/fix_database.sh

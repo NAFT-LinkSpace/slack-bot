@@ -23,8 +23,8 @@ Slackワークスペース内の公開チャンネルの投稿を取得し，一
 1. スクリプトを実行し環境構築
     ```bash
     # Windows の場合 `busybox64u sh` の実行後
-    chmod +x setup.sh
-    ./setup.sh
+    chmod +x ./without_docker/setup.sh
+    ./without_docker/setup.sh
     ```
 
 ### バックアップを取る準備
@@ -79,6 +79,6 @@ Slackワークスペース内の公開チャンネルの投稿を取得し，一
 
 ```bash
 # Windows の場合 `busybox64u sh` の実行後
-chmod +x run.sh
-./run.sh
+chmod +x ./without_docker/run.sh
+./without_docker/run.sh
 ```

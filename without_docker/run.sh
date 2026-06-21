@@ -1,6 +1,7 @@
 #!/bin/sh
 
 cd $(dirname "$0")
+cd ../
 
 # Prefer POSIX-compatible activation (use '.' instead of 'source')
 if [ -f ./env/bin/activate ]; then
